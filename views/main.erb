@@ -1,0 +1,30 @@
+<form action="/result" method="post">
+  <p>Выберите способ погашения</p>
+   <select name = "scheme">
+  <option selected value = "1" >Аннуитетная</option>
+  <option value = "2">Дифференцированная</option>
+  </select>
+  <p>Сумма покупки</p>
+  <input value = "5000" name="sum">
+  <p>Ставка, % годовых</p>
+  <input value = "10.00" name="proc">
+  <p>Срок кредитования, месяцы</p>
+  <input value = "12" name="month">   
+  <p>Одноразовая комиссия</p>
+  <input value = "5,00" name="firstcommis">
+  <select name = "onetimecom">
+  <option selected value = "1" >%</option>
+  <option value = "2">Сумма</option>
+  </select>
+  <p>Первоначальный взнос</p>
+  <input value = "10,00" name="firstpaym">
+  <select name = "onetimefee">
+  <option selected value = "1" >%</option>
+  <option value = "2">Сумма</option>
+  </select>
+  <p>Ежемесячная комиссия, %</p>
+  <input value = "0,00" name="commis">
+  <p></p>
+  
+  <input value = "Рассчитать" type="submit">
+</form>
