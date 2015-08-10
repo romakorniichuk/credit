@@ -1,31 +1,26 @@
 require 'sinatra'
 require 'shotgun'
 
-=begin
-spm = sum per month
-cpm = commission per month
-_w_o_ = without
-_w_ = with
-=end
+
 class Calc 
 
-def totalsum(spm,month,firstpaym,firstcommis) # Общая сумма
+def totalsum(spm,month,firstpaym,firstcommis)
 totalsum = spm*month + firstpaym+firstcommis
 end
-def overpayment(sum, total) #Переплата
+def overpayment(sum, total) 
 overpayment = total - sum
 end
-def sum_w_o_1st_paym(sum,firstpaym) #Сума без первой выплаты
+def sum_w_o_1st_paym(sum,firstpaym) 
 sum_w_o = sum - firstpaym
 end
-def com_per_month(sum,commis) #Комиссия за месяц
+def com_per_month(sum,commis) 
 cpm = sum*commis
 end
 end
 
 class ASPC < Calc #Аннуитетная схема погашения кредита
  
-def spm(sum,proc,month,cpm) #Сумма за месяц
+def spm(sum,proc,month,cpm) 
 a=1+proc/1200
 k=a**month*(a-1)/(a**month - 1)
 spm = k*sum
@@ -34,14 +29,14 @@ end
 
 
 end
-class DSPC < Calc #Дифференцированная схема погашения кредита
+class DSPC < Calc #Стандартная схема погашения кредита
 
-def maxspm(sum,month,proc) #Максимальная сумма платежа за месяц
+def maxspm(sum,month,proc)
 f = sum/month
-proc1 = (sum-f*(1-1))*proc/1200 # проценты за 1 месяц (максимальный)
-maxspm = f+proc1 # Сумма
+proc1 = (sum-f*(1-1))*proc/1200 
+maxspm = f+proc1 
 end 
-def creditusage(month,proc) # Плата за пользование кредитом, %
+def creditusage(month,proc) 
 creditusage = proc*(month+1)/24
 end
 end
@@ -72,16 +67,16 @@ post '/result' do
   @commis = params[:commis].to_f
   
   
-  @@start = calc.sum_w_o_1st_paym(@sum,@firstpaym) #сумма без первого взноса
+  @@start = calc.sum_w_o_1st_paym(@sum,@firstpaym) 
   @@cpm = calc.com_per_month(@@start, @commis)
   if params[:scheme] == "1" then #Аннуитетная
       @annspm = ann.spm(@@start,@proc,@month,@@cpm)#сумма за месяц
-      @annover = ann.overpayment(@sum, ann.totalsum(@annspm,@month,@firstpaym,@firstcommis)) #переплата по кредиту
+      @annover = ann.overpayment(@sum, ann.totalsum(@annspm,@month,@firstpaym,@firstcommis)) 
       erb :annuit
   else  #Дифференцированная
-      @diffmaxspm = diff.maxspm(@@start,@month,@proc) #сумма за месяц
-    @diffcu = diff.creditusage(@month,@proc) #процент за пользование кредитом
-      @diffover = (@diffcu/100+@commis)*@@start+@firstcommis #переплата по кредиту
+      @standmaxspm = diff.maxspm(@@start,@month,@proc) 
+    @standcu = diff.creditusage(@month,@proc) 
+      @standover = (@standcu/100+@commis)*@@start+@firstcommis 
       erb :stand
    end
   end
